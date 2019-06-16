@@ -1,2 +1,2 @@
-# mylexer
-A simple lexer written in C++
+# My-Cpp-Parser
+A LR(0) lexer written in C++
