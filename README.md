@@ -1,2 +1,2 @@
-# simple-cpp-lexer-for-c
+# SimpleCLexer
 A LR(0) lexer written in C++
