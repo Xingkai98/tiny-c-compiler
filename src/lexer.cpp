@@ -1,22 +1,22 @@
 #include "lexer.h"
 
-//ÓÃÓÚÓï·¨·ÖÎö²¿·Ö
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï·¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 char cc[100];
 
-//»º´æÇø´óÐ¡
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
 const int BUFFER_SIZE = 1000;
-//»º´æÇø×óÓÒ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 const int LEFT = 1;
-//»º´æÇø×óÓÒ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 const int RIGHT = 2;
-//¹Ø¼ü×Ö¸öÊý
+//ï¿½Ø¼ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
 const int KW_NUM = 66;
-//Ã¿¸öµ¥´Ê£¨°üÀ¨¹Ø¼ü×ÖºÍÓÃ»§×Ô¶¨Òå±äÁ¿×î´ó³¤¶È£©
+//Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½Ê£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½Öºï¿½ï¿½Ã»ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó³¤¶È£ï¿½
 const int MAX_LEN = 30;
-//¿ÉÈÝÄÉ¹Ø¼ü×ÖºÍ±äÁ¿¶àÉÙ
+//ï¿½ï¿½ï¿½ï¿½ï¿½É¹Ø¼ï¿½ï¿½ÖºÍ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 const int TBL_LEN = 100;
 
-//¹Ø¼ü´Ê±í
+//ï¿½Ø¼ï¿½ï¿½Ê±ï¿½
 char KW_LIS[TBL_LEN][MAX_LEN] = {
 	"asm",         "do",              "if",                "return",           "try",
 	"auto",        "double",          "inline",            "short",            "typedef",
@@ -33,36 +33,36 @@ char KW_LIS[TBL_LEN][MAX_LEN] = {
 	"delete",      "goto",            "reinterpret_cast",
 	"include",     "stdio",           "string",
 };
-//ÓÃ»§¹Ø¼ü×Ö±í
+//ï¿½Ã»ï¿½ï¿½Ø¼ï¿½ï¿½Ö±ï¿½
 char user_table[TBL_LEN][MAX_LEN];
 
-//´óÐ¡±È½Ï²Ù×÷·û´úºÅ
+//ï¿½ï¿½Ð¡ï¿½È½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 const int LT = 1;
 const int LE = 2;
 const int EQ = 3;
 const int NE = 4;
 const int GT = 5;
 const int GE = 6;
-//relop´úÖ¸´óÐ¡±È½Ï·û
+//relopï¿½ï¿½Ö¸ï¿½ï¿½Ð¡ï¿½È½Ï·ï¿½
 const int relop = 1;
-//assign_op´úÖ¸¸³Öµ·ûºÅ
+//assign_opï¿½ï¿½Ö¸ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½
 const int assign_op = 2;
-//iskey´úÖ¸Îª¹Ø¼ü×Ö
+//iskeyï¿½ï¿½Ö¸Îªï¿½Ø¼ï¿½ï¿½ï¿½
 const int iskey = 3;
-//ID´úÖ¸ÎªÓÃ»§×Ô¶¨ÒåµÄ±äÁ¿¼ÇºÅ
+//IDï¿½ï¿½Ö¸Îªï¿½Ã»ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½Çºï¿½
 const int ID = 4;
-//NUM´úÖ¸Êý×Ö
+//NUMï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½
 const int NUM = 5;
 
-//ÒÔÏÂÎª´íÎóÂë
-//1Îª±äÁ¿ÃûÒÔÊý×Ö¿ªÍ·
+//ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//1Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¿ï¿½Í·
 const int ERROR_VAR = 1;
-//Î´Öª·ûºÅ
+//Î´Öªï¿½ï¿½ï¿½ï¿½
 const int ERROR_UNK = 2;
-//Ð¡Êýµãºó²»ÄÜÓÐÎ´Öª·ûºÅ
+//Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î´Öªï¿½ï¿½ï¿½ï¿½
 const int ERROR_DIG = 3;
 
-//À¨ºÅ¼ÆÊý
+//ï¿½ï¿½ï¿½Å¼ï¿½ï¿½ï¿½
 int BIG_CLO;
 int MED_CLO;
 int SML_CLO;
@@ -71,14 +71,14 @@ char a;
 int state;
 char C;
 
-//»º´æÇø
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 char buffer_l[BUFFER_SIZE];
 char buffer_r[BUFFER_SIZE];
-//µ±Ç°µ¥´Ê
+//ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½
 char token[MAX_LEN];
-//Ö¸Ïò¸Ãµ¥´ÊµÄ¿ªÊ¼´¦
+//Ö¸ï¿½ï¿½Ãµï¿½ï¿½ÊµÄ¿ï¿½Ê¼ï¿½ï¿½
 char* lexemebegin;
-//ÏòÇ°Ì½
+//ï¿½ï¿½Ç°Ì½
 char* forward;
 
 
@@ -115,7 +115,7 @@ void print_buf(int index) {
 	}
 }
 
-//³õÊ¼»¯
+//ï¿½ï¿½Ê¼ï¿½ï¿½
 
 void default_init_for_parser() {
 	memset(cc, 0, sizeof(cc));
@@ -125,7 +125,7 @@ void default_init_for_parser() {
 	buffer_r[BUFFER_SIZE - 1] = EOF;
 	const char* s = " 3+3-4*6";
 	//const char* ss = "3-4+6*7";
-	strcpy_s(buffer_l, s);
+	strcpy(buffer_l, s);
 	buffer_l[strlen(buffer_l)] = EOF;
 	printf("%s\n", s);
 }
@@ -133,13 +133,13 @@ void get_char() {
 	C = *forward;
 	forward += 1;
 }
-//È¥¿Õ¸ñ
+//È¥ï¿½Õ¸ï¿½
 void get_nbc() {
 	while (C == ' ') {
 		get_char();
 	}
 }
-//×Ö·û´æÈëtoken
+//ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½token
 void cat() {
 	token[strlen(token)] = C;
 }
@@ -163,7 +163,7 @@ int digit() {
 void retract() {
 	forward -= 1;
 }
-//ÅÐ¶ÏÊÇ·ñÎª¹Ø¼ü×Ö
+//ï¿½Ð¶ï¿½ï¿½Ç·ï¿½Îªï¿½Ø¼ï¿½ï¿½ï¿½
 int reserve() {
 	for (int i = 0; i <= KW_NUM - 1; i++) {
 		if (strcmp(token, KW_LIS[i]) == 0) {
@@ -192,21 +192,21 @@ double stof(char* token) {
 		return -1;
 	}
 }
-//ÓÃ»§×Ô¶¨Òå¼ÇºÅ
+//ï¿½Ã»ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Çºï¿½
 int table_insert() {
 	for (int i = 0; i < TBL_LEN; i++) {
 		if (strlen(user_table[i]) == 0) {
-			strcpy_s(user_table[i], token);
+			strcpy(user_table[i], token);
 			return i;
 		}
 	}
 	printf("The table is full.\n");
 	return -1;
 }
-//Êä³ö
+//ï¿½ï¿½ï¿½
 void return_t(int type, int value) {
 	if (type == iskey) {
-		printf("<  %s  ,  ±£Áô¹Ø¼ü×Ö  >\n", KW_LIS[value]);
+		printf("<  %s  ,  ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½  >\n", KW_LIS[value]);
 	}
 	else if (type == relop) {
 		printf("<  ");
@@ -218,60 +218,60 @@ void return_t(int type, int value) {
 		case GT:printf(">"); break;
 		case GE:printf(">="); break;
 		}
-		printf("  ,  ÔËËã·û  >\n");
+		printf("  ,  ï¿½ï¿½ï¿½ï¿½ï¿½  >\n");
 	}
 	else if (type == assign_op) {
 		if (value == -1) {
-			printf("<  ==  ,  ÔËËã·û  >\n");
+			printf("<  ==  ,  ï¿½ï¿½ï¿½ï¿½ï¿½  >\n");
 		}
 		else if (value == -2) {
-			printf("<  +=  ,  ÔËËã·û  >\n");
+			printf("<  +=  ,  ï¿½ï¿½ï¿½ï¿½ï¿½  >\n");
 		}
 		else {
-			printf("<  -=  ,  ÔËËã·û  >\n");
+			printf("<  -=  ,  ï¿½ï¿½ï¿½ï¿½ï¿½  >\n");
 		}
 
 	}
 	else if (type == ID) {
-		printf("<  %s  ,  ÓÃ»§×Ô¶¨Òå·ûºÅ  >\n", user_table[value]);
+		printf("<  %s  ,  ï¿½Ã»ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  >\n", user_table[value]);
 	}
 	else if (type == NUM) {
 		cc[strlen(cc)] = '0' + value;
-		printf("<  %d  ,  ÕûÐÍÊý  >\n", value);
+		printf("<  %d  ,  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  >\n", value);
 	}
 	else if (value == -1 && type > 3) {
 		cc[strlen(cc)] = (char)type;
-		printf("<  %c  ,  ·ûºÅ  >\n", type);
+		printf("<  %c  ,  ï¿½ï¿½ï¿½ï¿½  >\n", type);
 	}
 	else {
-		printf("´íÎó·µ»ØÖµ£º%d %d.\n", type, value);
+		printf("ï¿½ï¿½ï¿½ó·µ»ï¿½Öµï¿½ï¿½%d %d.\n", type, value);
 	}
 }
-//¸¡µãÊýÊä³ö
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void return_t_double(int type, double value) {
-	printf("<  %.4f  ,  ¸¡µãÊý  >\n", value);
+	printf("<  %.4f  ,  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  >\n", value);
 }
-//´íÎó´¦Àí
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void error(int a) {
 	if (a == ERROR_UNK) {
-		//»»ÐÐ·ûºÍ´úÂë½áÊøÕâÁ½ÖÖÇé¿ö¶¼ºöÂÔ
+		//ï¿½ï¿½ï¿½Ð·ï¿½ï¿½Í´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (C == '\n' || C == 0 || C == '\t') {
 			return;
 		}
 		else {
-			printf("<  ±àÒë´íÎó£¡Óöµ½Î´Öª×Ö·û£¡  >\n");
+			printf("<  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î´Öªï¿½Ö·ï¿½ï¿½ï¿½  >\n");
 		}
 	}
 	else if (a == ERROR_VAR) {
-		printf("<  ±àÒë´íÎó£¡±äÁ¿Ãû²»ÄÜÒÔÊý×Ö¿ªÍ·£¡  >\n");
+		printf("<  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó£¡±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¿ï¿½Í·ï¿½ï¿½  >\n");
 	}
 	else if (a == ERROR_DIG) {
-		printf("<  ±àÒë´íÎó£¡²»ºÏ·¨µÄ¸¡µãÊý£¡  >\n");
+		printf("<  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó£¡²ï¿½ï¿½Ï·ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  >\n");
 	}
 	system("pause");
 	exit(0);
 }
-//ÒòÎªÌ½µ½²»ºÏÊÊµÄ×Ö·û»áÍËºó
+//ï¿½ï¿½ÎªÌ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ëºï¿½
 void set_to_next_word() {
 	if (forward == buffer_l || forward == buffer_r) {
 
@@ -281,13 +281,13 @@ void set_to_next_word() {
 		lexemebegin = forward;
 	}
 }
-//Ö÷³ÌÐò
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void lex() {
 	state = 0;
 	do {
 
 		if (forward - buffer_l >= BUFFER_SIZE) {
-			printf("buffer¶ÁÈ¡½áÊø.\n");
+			printf("bufferï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½.\n");
 			return;
 		}
 		switch (state) {
@@ -359,23 +359,23 @@ void lex() {
 			case '6':
 			case '7':
 			case '8':
-				//¼ÌÐøÊ¶±ðÊý×Ö
+				//ï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			case '9':state = 2; break;
-				//<ºÍ<=
+				//<ï¿½ï¿½<=
 			case '<':state = 8; break;
-				//>ºÍ>=
+				//>ï¿½ï¿½>=
 			case '>':state = 9; break;
 			case '=':state = 10; break;
 			case '+':state = 14; break;
 			case '-':state = 15; break;
-				//×¢ÊÍ
+				//×¢ï¿½ï¿½
 			case '/':state = 11; break;
 				//case '=':state = 0; return_t('=', -1); break;
 			case '*':state = 0; retract(); return_t('*', -1); break;
 			case '.':state = 0; retract(); return_t('.', -1); break;
 			case '(':SML_CLO++; state = 0; retract(); return_t('(', -1); break;
 			case ')':SML_CLO--; state = 0; retract(); return_t(')', -1); break;
-				//;ºó²»ÓÃretract£¬ÒòÎª;ºóÃæÒ»°ã¶¼ÊÇ»»ÐÐ·û"\n"£¬Ö±½ÓÍÌµô
+				//;ï¿½ï¿½ï¿½ï¿½retractï¿½ï¿½ï¿½ï¿½Îª;ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ã¶¼ï¿½Ç»ï¿½ï¿½Ð·ï¿½"\n"ï¿½ï¿½Ö±ï¿½ï¿½ï¿½Ìµï¿½
 			case ';':state = 0; return_t(';', -1); break;
 			case '#':state = 0; retract(); return_t('#', -1); break;
 			case '\\':state = 0; retract(); return_t('\\', -1); break;
@@ -388,7 +388,7 @@ void lex() {
 			default: state = 13; break;
 			};
 			break;
-			//Ê¶±ðÓÉ×ÖÄ¸¹¹³ÉµÄµ¥´Ê
+			//Ê¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ÉµÄµï¿½ï¿½ï¿½
 		case 1:
 			cat();
 			get_char();
@@ -406,7 +406,7 @@ void lex() {
 				else {
 					for (int i = 0; i < TBL_LEN; i++) {
 						if (strlen(user_table[i]) == 0) {
-							strcpy_s(user_table[i], token);
+							strcpy(user_table[i], token);
 							return_t(ID, i);
 							break;
 						}
@@ -414,7 +414,7 @@ void lex() {
 				}
 			}
 			break;
-			//Ê¶±ðÊý×Ö
+			//Ê¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		case 2:
 			cat();
 			get_char();
@@ -484,16 +484,16 @@ void lex() {
 			case 'Z':error(ERROR_VAR);  retract(); state = 0; break;
 			default:
 				retract();
-				//ÒòÎª¿ªÊ¼Ê±set_to_next_wordº¯Êý»áÈÃforward¼ÓÒ»
-				//¶øÏÖÔÚµ±Ç°forwardËùÖ¸×Ö·ûÒÑ¾­ÊÇÐèÒªÖØÐÂÊ¶±ðµÄ×Ö·û
-				//ËùÒÔÏÈ¼õÒ»ÔÙ¼ÓÒ»
+				//ï¿½ï¿½Îªï¿½ï¿½Ê¼Ê±set_to_next_wordï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½forwardï¿½ï¿½Ò»
+				//ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ç°forwardï¿½ï¿½Ö¸ï¿½Ö·ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½Ö·ï¿½
+				//ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½Ò»ï¿½Ù¼ï¿½Ò»
 				retract();
 				state = 0;
 				return_t(NUM, stoi(token));
 				break;
 			}
 			break;
-			//Ê¶±ðÐ¡Êý
+			//Ê¶ï¿½ï¿½Ð¡ï¿½ï¿½
 		case 3:
 			cat();
 			get_char();
@@ -504,7 +504,7 @@ void lex() {
 				state = 0;
 			}
 			break;
-			//Ê¶±ð¿ÆÑ§¼ÇÊý·¨
+			//Ê¶ï¿½ï¿½ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		case 4:
 			cat();
 			get_char();
@@ -568,7 +568,7 @@ void lex() {
 			if (digit())
 				state = 7;
 			break;
-			//Ê¶±ð<ºÍ<=
+			//Ê¶ï¿½ï¿½<ï¿½ï¿½<=
 		case 8:
 			cat();
 			get_char();
@@ -584,7 +584,7 @@ void lex() {
 				break;
 			}
 			break;
-			//Ê¶±ð>ºÍ>=
+			//Ê¶ï¿½ï¿½>ï¿½ï¿½>=
 		case 9:
 			cat();
 			get_char();
@@ -599,7 +599,7 @@ void lex() {
 				return_t(relop, GT);
 			}
 			break;
-			//Ê¶±ð==
+			//Ê¶ï¿½ï¿½==
 		case 10:
 			cat();
 			get_char();
@@ -618,23 +618,23 @@ void lex() {
 				return_t('=', -1);
 			}
 			break;
-			//Ê¶±ðÁ¼ÖÖ×¢ÊÍ£¬ÈôÎªµ¥ÐÐÔòÌø×ªÖÁ16
+			//Ê¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½Í£ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½16
 		case 11:
 			cat();
 			get_char();
 			if (C == '*') {
-				//¶àÐÐ×¢ÊÍ
+				//ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½
 				state = 12;
 			}
 			else if (C == '/') {
-				//µ¥ÐÐ×¢ÊÍ
+				//ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½
 				state = 16;
 			}
 			else {
 				retract();
 				retract();
 				state = 0;
-				//³ý·¨
+				//ï¿½ï¿½ï¿½ï¿½
 				return_t('/', -1);
 			}
 			break;
@@ -650,13 +650,13 @@ void lex() {
 			else
 				state = 12;
 			break;
-			//Î´Öª´íÎó
+			//Î´Öªï¿½ï¿½ï¿½ï¿½
 		case 13:
 			error(ERROR_UNK);
 			retract();
 			state = 0;
 			break;
-			//Ê¶±ð+=
+			//Ê¶ï¿½ï¿½+=
 		case 14:
 			cat();
 			get_char();
@@ -675,7 +675,7 @@ void lex() {
 				return_t('+', -1);
 			}
 			break;
-			//Ê¶±ð-=
+			//Ê¶ï¿½ï¿½-=
 		case 15:
 			cat();
 			get_char();
@@ -694,7 +694,7 @@ void lex() {
 				return_t('-', -1);
 			}
 			break;
-			//Ê¶±ð¡°//¡±ÐÍ×¢ÊÍ
+			//Ê¶ï¿½ï¿½//ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½
 		case 16:
 			while (C != '\n')
 				get_char();
@@ -707,12 +707,12 @@ void lex() {
 }
 void check_closure() {
 	if (SML_CLO != 0) {
-		printf("<  ´íÎóÌáÊ¾£¡Ð¡À¨ºÅÊýÁ¿²»Æ¥Åä£¡  >\n");
+		printf("<  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½ä£¡  >\n");
 	}
 	if (MED_CLO != 0) {
-		printf("<  ´íÎóÌáÊ¾£¡ÖÐÀ¨ºÅÊýÁ¿²»Æ¥Åä£¡  >\n");
+		printf("<  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½ä£¡  >\n");
 	}
 	if (BIG_CLO != 0) {
-		printf("<  ´íÎóÌáÊ¾£¡´óÀ¨ºÅÊýÁ¿²»Æ¥Åä£¡  >\n");
+		printf("<  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½ä£¡  >\n");
 	}
 }

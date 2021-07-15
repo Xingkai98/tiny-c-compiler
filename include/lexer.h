@@ -10,34 +10,34 @@
 
 void load_buffer(int index);
 void print_buf(int index);
-//³õÊ¼»¯
+//ï¿½ï¿½Ê¼ï¿½ï¿½
 void default_init_for_parser();
 void get_char();
-//È¥¿Õ¸ñ
+//È¥ï¿½Õ¸ï¿½
 void get_nbc();
-//×Ö·û´æÈëtoken
+//ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½token
 void cat();
 int letter();
 int digit();
 void retract();
-//ÅÐ¶ÏÊÇ·ñÎª¹Ø¼ü×Ö
+//ï¿½Ð¶ï¿½ï¿½Ç·ï¿½Îªï¿½Ø¼ï¿½ï¿½ï¿½
 int reserve();
 int stoi(char* token);
 double stof(char* token);
-//ÓÃ»§×Ô¶¨Òå¼ÇºÅ
+//ï¿½Ã»ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Çºï¿½
 int table_insert();
-//Êä³ö
+//ï¿½ï¿½ï¿½
 void return_t(int type, int value);
-//¸¡µãÊýÊä³ö
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void return_t_double(int type, double value);
-//´íÎó´¦Àí
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void error(int a);
-//ÒòÎªÌ½µ½²»ºÏÊÊµÄ×Ö·û»áÍËºó
+//ï¿½ï¿½ÎªÌ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ëºï¿½
 void set_to_next_word();
-//Ö÷³ÌÐò
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void lex();
 void check_closure();
-//Êä³öccÊý×é
+//ï¿½ï¿½ï¿½ccï¿½ï¿½ï¿½ï¿½
 
 #endif // !LEXER_H
 
