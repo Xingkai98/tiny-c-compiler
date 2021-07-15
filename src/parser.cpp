@@ -9,16 +9,6 @@ char CC[100];
 char print_stack[50];
 char print_CC[50];
 
-//״̬ջ���ַ�ջ
-//list<int> l1;
-//list<char> l2;
-
-//������
-//map <pair< int, char >, int > m;
-//����ʽ�Ҳ�������ѯ
-//map <int, int> beta_query;
-//map <int, string> R_query;
-
 bool isShift(int a) {
 	if (a >= 201 && a < 300)
 		return true;
@@ -39,11 +29,8 @@ Parser::Parser(){
 }
 
 void Parser::call_lexer() {
-	default_init_for_parser();
-	//print_buf(1);
-	printf("�ʷ������׶ε��óɹ���\n");
-	lex();
-	check_closure();
+	Lexer l;
+	l.lex();
 	this->CC[strlen(this->CC)] = '$';
 }
 void Parser::init_map() {
@@ -238,7 +225,6 @@ void Parser::parse() {
 	//������
 	int step = 1;
 	Parser::init_map();
-	printf("\ntoken���飺\n%s\n", CC);
 	//S0Ϊ0��ջ
 	l1.push_back(0);
 	int top = 0;

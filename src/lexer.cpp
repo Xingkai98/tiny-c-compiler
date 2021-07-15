@@ -1,89 +1,20 @@
 #include "lexer.h"
+#include <iostream>
 
-//�����﷨��������
-char cc[100];
+Lexer::Lexer(){
+	memset(cc, 0, sizeof(cc));
+	lexemebegin = buffer_l;
+	forward = buffer_l;
+	buffer_l[BUFFER_SIZE - 1] = EOF;
+	buffer_r[BUFFER_SIZE - 1] = EOF;
+	const char* s = " 3+3-4*6+5/5";
+	//const char* ss = "3-4+6*7";
+	strcpy(buffer_l, s);
+	buffer_l[strlen(buffer_l)] = EOF;
+	printf("%s\n", s);
+}
 
-//��������С
-const int BUFFER_SIZE = 1000;
-//����������
-const int LEFT = 1;
-//����������
-const int RIGHT = 2;
-//�ؼ��ָ���
-const int KW_NUM = 66;
-//ÿ�����ʣ������ؼ��ֺ��û��Զ��������󳤶ȣ�
-const int MAX_LEN = 30;
-//�����ɹؼ��ֺͱ�������
-const int TBL_LEN = 100;
-
-//�ؼ��ʱ�
-char KW_LIS[TBL_LEN][MAX_LEN] = {
-	"asm",         "do",              "if",                "return",           "try",
-	"auto",        "double",          "inline",            "short",            "typedef",
-	"bool",        "dynamic_cast",    "int",               "signed",           "typeid",
-	"break",       "else",            "long",              "static",           "union",
-	"case",        "enum",            "mutable",           "static_cast",      "unsigned",
-	"catch",       "explicit",        "namespace",         "struct",           "using",
-	"char",        "export",          "new",               "switch",           "virtual",
-	"class",       "extern",          "register",          "sizeof",           "typename",
-	"const",       "false",           "operator",          "template",         "void",
-	"const_cast",  "float",           "private",           "this",             "volatile",
-	"continue",    "for",             "protected",         "throw",            "wchar_t",
-	"default",     "friend",          "public",            "true",             "while",
-	"delete",      "goto",            "reinterpret_cast",
-	"include",     "stdio",           "string",
-};
-//�û��ؼ��ֱ�
-char user_table[TBL_LEN][MAX_LEN];
-
-//��С�Ƚϲ���������
-const int LT = 1;
-const int LE = 2;
-const int EQ = 3;
-const int NE = 4;
-const int GT = 5;
-const int GE = 6;
-//relop��ָ��С�ȽϷ�
-const int relop = 1;
-//assign_op��ָ��ֵ����
-const int assign_op = 2;
-//iskey��ָΪ�ؼ���
-const int iskey = 3;
-//ID��ָΪ�û��Զ���ı����Ǻ�
-const int ID = 4;
-//NUM��ָ����
-const int NUM = 5;
-
-//����Ϊ������
-//1Ϊ�����������ֿ�ͷ
-const int ERROR_VAR = 1;
-//δ֪����
-const int ERROR_UNK = 2;
-//С���������δ֪����
-const int ERROR_DIG = 3;
-
-//���ż���
-int BIG_CLO;
-int MED_CLO;
-int SML_CLO;
-
-char a;
-int state;
-char C;
-
-//������
-char buffer_l[BUFFER_SIZE];
-char buffer_r[BUFFER_SIZE];
-//��ǰ����
-char token[MAX_LEN];
-//ָ��õ��ʵĿ�ʼ��
-char* lexemebegin;
-//��ǰ̽
-char* forward;
-
-
-
-void load_buffer(int index) {
+void Lexer::load_buffer(int index) {
 	if (index == LEFT) {
 		a = getchar();
 		while (a != EOF && strlen(buffer_l) <= BUFFER_SIZE) {
@@ -103,7 +34,7 @@ void load_buffer(int index) {
 	}
 }
 
-void print_buf(int index) {
+void Lexer::print_buf(int index) {
 	if (index == LEFT) {
 		printf("%s\n", buffer_l);
 	}
@@ -116,34 +47,21 @@ void print_buf(int index) {
 }
 
 //��ʼ��
-
-void default_init_for_parser() {
-	memset(cc, 0, sizeof(cc));
-	lexemebegin = buffer_l;
-	forward = buffer_l;
-	buffer_l[BUFFER_SIZE - 1] = EOF;
-	buffer_r[BUFFER_SIZE - 1] = EOF;
-	const char* s = " 3+3-4*6";
-	//const char* ss = "3-4+6*7";
-	strcpy(buffer_l, s);
-	buffer_l[strlen(buffer_l)] = EOF;
-	printf("%s\n", s);
-}
-void get_char() {
+void Lexer::get_char() {
 	C = *forward;
 	forward += 1;
 }
 //ȥ�ո�
-void get_nbc() {
+void Lexer::get_nbc() {
 	while (C == ' ') {
 		get_char();
 	}
 }
 //�ַ�����token
-void cat() {
+void Lexer::cat() {
 	token[strlen(token)] = C;
 }
-int letter() {
+int Lexer::letter() {
 	if (C >= 'a' && C <= 'z') {
 		return 1;
 	}
@@ -154,17 +72,17 @@ int letter() {
 		return 0;
 	}
 }
-int digit() {
+int Lexer::digit() {
 	if (C >= '0' && C <= '9') {
 		return 1;
 	}
 	else return 0;
 }
-void retract() {
+void Lexer::retract() {
 	forward -= 1;
 }
 //�ж��Ƿ�Ϊ�ؼ���
-int reserve() {
+int Lexer::reserve() {
 	for (int i = 0; i <= KW_NUM - 1; i++) {
 		if (strcmp(token, KW_LIS[i]) == 0) {
 			return i;
@@ -173,7 +91,7 @@ int reserve() {
 	return -1;
 }
 //string-->int
-int stoi(char* token) {
+int Lexer::stoi(char* token) {
 	int t = atoi(token);
 	if (t > 0) {
 		return t;
@@ -183,7 +101,7 @@ int stoi(char* token) {
 	}
 }
 //string-->double
-double stof(char* token) {
+double Lexer::stof(char* token) {
 	double t = atof(token);
 	if (t > 0) {
 		return t;
@@ -193,7 +111,7 @@ double stof(char* token) {
 	}
 }
 //�û��Զ���Ǻ�
-int table_insert() {
+int Lexer::table_insert() {
 	for (int i = 0; i < TBL_LEN; i++) {
 		if (strlen(user_table[i]) == 0) {
 			strcpy(user_table[i], token);
@@ -204,9 +122,9 @@ int table_insert() {
 	return -1;
 }
 //���
-void return_t(int type, int value) {
+void Lexer::return_t(int type, int value) {
 	if (type == iskey) {
-		printf("<  %s  ,  �����ؼ���  >\n", KW_LIS[value]);
+		printf("<  %s  ,  keyword  >\n", KW_LIS[value]);
 	}
 	else if (type == relop) {
 		printf("<  ");
@@ -218,61 +136,61 @@ void return_t(int type, int value) {
 		case GT:printf(">"); break;
 		case GE:printf(">="); break;
 		}
-		printf("  ,  �����  >\n");
+		printf("  ,  operator  >\n");
 	}
 	else if (type == assign_op) {
 		if (value == -1) {
-			printf("<  ==  ,  �����  >\n");
+			printf("<  ==  ,  operator  >\n");
 		}
 		else if (value == -2) {
-			printf("<  +=  ,  �����  >\n");
+			printf("<  +=  ,  operator  >\n");
 		}
 		else {
-			printf("<  -=  ,  �����  >\n");
+			printf("<  -=  ,  operator  >\n");
 		}
 
 	}
 	else if (type == ID) {
-		printf("<  %s  ,  �û��Զ������  >\n", user_table[value]);
+		printf("<  %s  ,  user-defined symbol  >\n", user_table[value]);
 	}
-	else if (type == NUM) {
+	else if (type == NUMBER) {
 		cc[strlen(cc)] = '0' + value;
-		printf("<  %d  ,  ������  >\n", value);
+		printf("<  %d  ,  integer  >\n", value);
 	}
 	else if (value == -1 && type > 3) {
 		cc[strlen(cc)] = (char)type;
-		printf("<  %c  ,  ����  >\n", type);
+		printf("<  %c  ,  symbol  >\n", type);
 	}
 	else {
-		printf("���󷵻�ֵ��%d %d.\n", type, value);
+		printf("Error code: %d %d.\n", type, value);
 	}
 }
 //���������
-void return_t_double(int type, double value) {
-	printf("<  %.4f  ,  ������  >\n", value);
+void Lexer::return_t_double(int type, double value) {
+	printf("<  %.4f  ,  double  >\n", value);
 }
 //������
-void error(int a) {
+void Lexer::error(int a) {
 	if (a == ERROR_UNK) {
 		//���з��ʹ���������������������
 		if (C == '\n' || C == 0 || C == '\t') {
 			return;
 		}
 		else {
-			printf("<  �����������δ֪�ַ���  >\n");
+			printf("<  Error: Unknown characters  >\n");
 		}
 	}
 	else if (a == ERROR_VAR) {
-		printf("<  ������󣡱��������������ֿ�ͷ��  >\n");
+		printf("<  Error: Variable name cannot start with digits  >\n");
 	}
 	else if (a == ERROR_DIG) {
-		printf("<  ������󣡲��Ϸ��ĸ�������  >\n");
+		printf("<  Error: Invalid floating-point numbers.  >\n");
 	}
 	system("pause");
 	exit(0);
 }
 //��Ϊ̽�������ʵ��ַ����˺�
-void set_to_next_word() {
+void Lexer::set_to_next_word() {
 	if (forward == buffer_l || forward == buffer_r) {
 
 	}
@@ -282,12 +200,12 @@ void set_to_next_word() {
 	}
 }
 //������
-void lex() {
+void Lexer::lex() {
 	state = 0;
 	do {
 
 		if (forward - buffer_l >= BUFFER_SIZE) {
-			printf("buffer��ȡ����.\n");
+			printf("buffer read finished.\n");
 			return;
 		}
 		switch (state) {
@@ -489,7 +407,7 @@ void lex() {
 				//�����ȼ�һ�ټ�һ
 				retract();
 				state = 0;
-				return_t(NUM, stoi(token));
+				return_t(NUMBER, stoi(token));
 				break;
 			}
 			break;
@@ -524,7 +442,7 @@ void lex() {
 				retract();
 				retract();
 				state = 0;
-				return_t_double(NUM, stof(token));
+				return_t_double(NUMBER, stof(token));
 				break;
 			}
 			break;
@@ -704,15 +622,19 @@ void lex() {
 		}
 	} while (C != EOF);
 	cc[strlen(cc)] = '$';
+	//Lexer::check_closure();
 }
-void check_closure() {
+void Lexer::check_closure() {
 	if (SML_CLO != 0) {
-		printf("<  ������ʾ��С����������ƥ�䣡  >\n");
+		std::cout<<SML_CLO<<std::endl;
+		printf("<  Error: 小括号不匹配  >\n");
 	}
 	if (MED_CLO != 0) {
-		printf("<  ������ʾ��������������ƥ�䣡  >\n");
+		std::cout<<MED_CLO<<std::endl;
+		printf("<  Error: 中括号不匹配  >\n");
 	}
 	if (BIG_CLO != 0) {
-		printf("<  ������ʾ��������������ƥ�䣡  >\n");
+		std::cout<<BIG_CLO<<std::endl;
+		printf("<  Error: 大括号不匹配  >\n");
 	}
 }
