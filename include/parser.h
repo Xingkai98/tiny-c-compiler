@@ -20,10 +20,10 @@ bool isReduce(int a);
 
 class Parser{
     public:
-        Parser();
+        Parser(std::string s);
         void parse();
     private:
-        void call_lexer();
+        void call_lexer(std::string s);
         void init_map();
         void output_stack();
         void output_CC();

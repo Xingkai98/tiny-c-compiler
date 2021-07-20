@@ -1,4 +1,3 @@
-#pragma once
 #ifndef LEXER_H
 #define LEXER_H
 
@@ -6,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <string>
 
 //��������С
 const int BUFFER_SIZE = 1000;
@@ -66,7 +66,7 @@ const char KW_LIS[TBL_LEN][MAX_LEN] = {
 
 class Lexer{
     public:
-        Lexer();
+        Lexer(std::string s);
         void lex();
     private:
         void load_buffer(int index);

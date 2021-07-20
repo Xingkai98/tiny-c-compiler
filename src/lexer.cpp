@@ -1,17 +1,23 @@
 #include "lexer.h"
 #include <iostream>
+#include <string>
 
-Lexer::Lexer(){
+Lexer::Lexer(std::string s){
 	memset(cc, 0, sizeof(cc));
+	memset(buffer_l, 0, sizeof(buffer_l));
+	memset(buffer_r, 0, sizeof(buffer_r));
 	lexemebegin = buffer_l;
 	forward = buffer_l;
 	buffer_l[BUFFER_SIZE - 1] = EOF;
 	buffer_r[BUFFER_SIZE - 1] = EOF;
-	const char* s = " 3+3-4*6+5/5";
-	//const char* ss = "3-4+6*7";
-	strcpy(buffer_l, s);
-	buffer_l[strlen(buffer_l)] = EOF;
-	printf("%s\n", s);
+	//const char* str = "int main(){int a=3;}";
+	//strcpy(buffer_l, str);
+	strcpy(buffer_l, s.c_str());
+	//buffer_l[strlen(buffer_l)] = EOF;
+	std::cout<<s.length()<<std::endl;
+	buffer_l[s.length()] = EOF;
+	std::cout << buffer_l << std::endl;
+	std::cout << buffer_r << std::endl;
 }
 
 void Lexer::load_buffer(int index) {

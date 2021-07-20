@@ -23,13 +23,13 @@ bool isReduce(int a) {
 		return false;
 }
 
-Parser::Parser(){
-	Parser::call_lexer();
+Parser::Parser(std::string s){
+	Parser::call_lexer(s);
 	Parser::init_map();
 }
 
-void Parser::call_lexer() {
-	Lexer l;
+void Parser::call_lexer(std::string s) {
+	Lexer l(s);
 	l.lex();
 	this->CC[strlen(this->CC)] = '$';
 }

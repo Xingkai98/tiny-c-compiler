@@ -3,6 +3,8 @@
 #include "Parser.h"
 
 int main(int, char**) {
-    Parser p;
+    std::string input;
+    std::getline(std::cin, input);
+    Parser p(input);
 	p.parse();
 }
